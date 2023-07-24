@@ -66,6 +66,7 @@ for i in range (50): #crea los meteoros y genera la posicion donde van a comienz
     meteoroLista.add(meteoros)
     totalListaImagenes.add(meteoros)
     
+sonidoLaser = pygame.mixer.Sound("recursos/sonido/laser5.ogg")
 
 while not cerrar:
     for event in pygame.event.get():
@@ -75,10 +76,11 @@ while not cerrar:
             disparo = laser()
             disparo.rect.x = jugador.rect.x + 45
             disparo.rect.y = jugador.rect.y - 20
+           
             
             totalListaImagenes.add(disparo)
             lasersLista.add(disparo)
-            
+            sonidoLaser.play()
        
     #el metodo update remplaza todo este bloque de codigo     
     """direcionMouse = pygame.mouse.get_pos()
