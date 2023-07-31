@@ -46,10 +46,11 @@ class laser (pygame.sprite.Sprite):
 #crea la clase juego
 class juego (object):
     def __init__ (self, sonidoLaser, imagenDeFondo):
+        self.gameOver = False
         self.puntaje = 0
         self.meteoroLista = pygame.sprite.Group()
         self.totalListaImagenes = pygame.sprite.Group()
-        self.cantidadMeteoros = 50
+        self.cantidadMeteoros = 10
         self.lasersLista = pygame.sprite.Group()
         
         
@@ -64,6 +65,12 @@ class juego (object):
         self.totalListaImagenes.add(self.jugador)
         self.fondo = pygame.image.load(imagenDeFondo).convert()
         self.sonido = sonidoLaser
+    
+    def reset(self):
+        self.meteoroLista.empty()
+        self.totalListaImagenes.empty()
+        self.lasersLista.empty()
+        self.gameOver = False
         
     def process_events (self):
         for event in pygame.event.get():
@@ -78,20 +85,31 @@ class juego (object):
                 self.totalListaImagenes.add(disparo)
                 self.lasersLista.add(disparo)
                 self.sonido.play()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    if self.gameOver:
+                        self.reset()
+                        print("siguiente nivel")
+           
         return False
 
     def run_logic (self):
-        self.totalListaImagenes.update()
-        for disparo in self.lasersLista:
-            meteoroHitLista = pygame.sprite.spritecollide(disparo, self.meteoroLista, True)
-            for meteoro in meteoroHitLista:
-                self.totalListaImagenes.remove(disparo)
-                self.lasersLista.remove(disparo)
-                self.puntaje += 1
-                print (self.puntaje)
-            if disparo.rect.y < -10 :
-                self.totalListaImagenes.remove(disparo)
-                self.lasersLista.remove(disparo)
+        if not self.gameOver:
+            self.totalListaImagenes.update()
+            for disparo in self.lasersLista:
+                meteoroHitLista = pygame.sprite.spritecollide(disparo, self.meteoroLista, True)
+                for meteoro in meteoroHitLista:
+                    self.totalListaImagenes.remove(disparo)
+                    self.lasersLista.remove(disparo)
+                    self.puntaje += 1
+                    print (self.puntaje)
+                if disparo.rect.y < -10 :
+                    self.totalListaImagenes.remove(disparo)
+                    self.lasersLista.remove(disparo)
+                if len(self.meteoroLista) == 0:
+                    self.gameOver = True
+                    print("game over")
+                    self.cantidadMeteoros += 5
     
     def display_frame (self,ventana):
         ventana.blit(self.fondo,[0,0])
