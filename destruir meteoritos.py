@@ -52,25 +52,20 @@ class juego (object):
         self.totalListaImagenes = pygame.sprite.Group()
         self.cantidadMeteoros = 10
         self.lasersLista = pygame.sprite.Group()
-        
-        
-        for i in range (self.cantidadMeteoros): #crea los meteoros y genera la posicion donde van a comienzar
-            meteoros = meteoro()
-            meteoros.rect.x = random.randrange(pantallaAncho)
-            meteoros.rect.y = random.randrange(pantallaAlto)
-            self.meteoroLista.add(meteoros)
-            self.totalListaImagenes.add(meteoros)
+        self.meteorosAgregadosXNivel = 5
             
         self.jugador = player()
         self.totalListaImagenes.add(self.jugador)
         self.fondo = pygame.image.load(imagenDeFondo).convert()
         self.sonido = sonidoLaser
     
-    def reset(self):
-        self.meteoroLista.empty()
-        self.totalListaImagenes.empty()
-        self.lasersLista.empty()
-        self.gameOver = False
+    def crearTandasMeteoros(self): 
+           for i in range (self.cantidadMeteoros): #crea los meteoros y genera la posicion donde van a comienzar
+            meteoros = meteoro()
+            meteoros.rect.x = random.randrange(pantallaAncho)
+            meteoros.rect.y = random.randrange(pantallaAlto)
+            self.meteoroLista.add(meteoros)
+            self.totalListaImagenes.add(meteoros)
         
     def process_events (self):
         for event in pygame.event.get():
@@ -85,11 +80,6 @@ class juego (object):
                 self.totalListaImagenes.add(disparo)
                 self.lasersLista.add(disparo)
                 self.sonido.play()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    if self.gameOver:
-                        self.reset()
-                        print("siguiente nivel")
            
         return False
 
@@ -106,10 +96,10 @@ class juego (object):
                 if disparo.rect.y < -10 :
                     self.totalListaImagenes.remove(disparo)
                     self.lasersLista.remove(disparo)
-                if len(self.meteoroLista) == 0:
-                    self.gameOver = True
-                    print("game over")
-                    self.cantidadMeteoros += 5
+            if not self.meteoroLista:
+                self.cantidadMeteoros += self.meteorosAgregadosXNivel
+                print ("alerta")
+                
     
     def display_frame (self,ventana):
         ventana.blit(self.fondo,[0,0])
