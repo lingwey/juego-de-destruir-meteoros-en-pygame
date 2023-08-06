@@ -50,7 +50,7 @@ class juego (object):
         self.puntaje = 0
         self.meteoroLista = pygame.sprite.Group()
         self.totalListaImagenes = pygame.sprite.Group()
-        self.cantidadMeteoros = 10
+        self.cantidadMeteoros = 5
         self.lasersLista = pygame.sprite.Group()
         self.meteorosAgregadosXNivel = 5
             
@@ -63,7 +63,7 @@ class juego (object):
            for i in range (self.cantidadMeteoros): #crea los meteoros y genera la posicion donde van a comienzar
             meteoros = meteoro()
             meteoros.rect.x = random.randrange(pantallaAncho)
-            meteoros.rect.y = random.randrange(pantallaAlto)
+            meteoros.rect.y = random.randrange(250)#pantallaAlto)
             self.meteoroLista.add(meteoros)
             self.totalListaImagenes.add(meteoros)
         
@@ -99,7 +99,7 @@ class juego (object):
             if not self.meteoroLista:
                 self.cantidadMeteoros += self.meteorosAgregadosXNivel
                 print ("alerta")
-                
+                self.crearTandasMeteoros()
     
     def display_frame (self,ventana):
         ventana.blit(self.fondo,[0,0])
