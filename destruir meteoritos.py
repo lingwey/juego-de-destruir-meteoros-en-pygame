@@ -1,9 +1,9 @@
-import pygame, random
+import pygame, random, time, sys
 
 pantallaAlto = 680
 pantallaAncho = 720
 negro = (0,0,0)
-
+blanco = (255, 255,255)
 #agrega imagenes para el juego
 class meteoro (pygame.sprite.Sprite):
     def __init__ (self):
@@ -58,6 +58,24 @@ class juego (object):
         self.totalListaImagenes.add(self.jugador)
         self.fondo = pygame.image.load(imagenDeFondo).convert()
         self.sonido = sonidoLaser
+        
+        self.entreTiempo = 3
+        self.ultimaTanda = time.time()
+        self.reiniciarJuego()
+    
+    def reiniciarJuego (self):
+        self.gameOver = False
+        self.puntaje = 0
+        self.meteoroLista.empty()
+        self.totalListaImagenes.empty()
+        self.lasersLista.empty()
+        self.cantidadMeteoros = 5
+        self.entreTiempo = 5
+        self.ultimaTanda = time.time()
+        self.jugador = player()
+        self.totalListaImagenes.add(self.jugador)
+        self.jugador.rect.x = pantallaAncho // 2 - 45
+        self.jugador.rect.y = 80
     
     def crearTandasMeteoros(self): 
            for i in range (self.cantidadMeteoros): #crea los meteoros y genera la posicion donde van a comienzar
@@ -80,10 +98,15 @@ class juego (object):
                 self.totalListaImagenes.add(disparo)
                 self.lasersLista.add(disparo)
                 self.sonido.play()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    if self.gameOver:
+                       self.reiniciarJuego()
            
         return False
 
     def run_logic (self):
+        tiempoActual = time.time()
         if not self.gameOver:
             self.totalListaImagenes.update()
             for disparo in self.lasersLista:
@@ -97,13 +120,30 @@ class juego (object):
                     self.totalListaImagenes.remove(disparo)
                     self.lasersLista.remove(disparo)
             if not self.meteoroLista:
-                self.cantidadMeteoros += self.meteorosAgregadosXNivel
-                print ("alerta")
-                self.crearTandasMeteoros()
+                if tiempoActual - self.ultimaTanda >= self.entreTiempo:
+                    self.cantidadMeteoros += self.meteorosAgregadosXNivel
+                    print ("alerta")
+                    self.crearTandasMeteoros()
+            if pygame.sprite.spritecollide(self.jugador,self.meteoroLista,True):
+                    self.gameOver = True
+                    #print("muerto")
+
     
     def display_frame (self,ventana):
         ventana.blit(self.fondo,[0,0])
-        self.totalListaImagenes.draw(ventana)
+        fuente = pygame.font.SysFont("serif", 25)
+        textoPuntaje = fuente.render("Puntaje: " + str(self.puntaje), True, blanco)
+        esquinaXIzquierdaInfe = 10
+        esquinaYIzquierdaInfe = pantallaAlto - 40
+        ventana.blit(textoPuntaje,[esquinaXIzquierdaInfe, esquinaYIzquierdaInfe])
+        if self.gameOver:
+            texto = fuente.render("Muerto. Pulsar barra para volver a empezar", True, blanco)
+            centroX = (pantallaAncho // 2) - (texto.get_width() // 2)
+            centroY = (pantallaAlto // 2) - (texto.get_height() // 2)
+            ventana.blit(texto,[centroX,centroY])
+        if not self.gameOver:
+            self.totalListaImagenes.draw(ventana)
+            
         pygame.display.flip()
 
 def main ():
