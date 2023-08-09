@@ -1,47 +1,11 @@
 import pygame, random, time, sys
+from jugadorYLaser import *
+from METEORO import *
 
 pantallaAlto = 680
 pantallaAncho = 720
 negro = (0,0,0)
 blanco = (255, 255,255)
-#agrega imagenes para el juego
-class meteoro (pygame.sprite.Sprite):
-    def __init__ (self):
-        super().__init__()
-        self.image = pygame.image.load("recursos/imagenes/meteor.png").convert()
-        self.image.set_colorkey(negro)
-        self.rect = self.image.get_rect()
-    
-    def update (self):
-        #genera el moviemiento de caida de los meteoros
-        self.rect.y += 1
-        if self.rect.y > pantallaAlto: #reinicia la caida de los meteoros cambiando la posicion del eje x 
-            self.rect.y = -10
-            self.rect.x = random.randrange(pantallaAncho)
-    
-        
-class player (pygame.sprite.Sprite):
-    def __init__ (self):
-        super().__init__()
-        self.image = pygame.image.load("recursos/imagenes/player.png").convert()
-        self.image.set_colorkey(negro)
-        self.rect = self.image.get_rect()
-    
-    def update (self): #controla los movimeintos del jugador y mantiene limpio el codiog del bucle principal
-        direcionMouse = pygame.mouse.get_pos()
-         #print (direcionMouse)
-        self.rect.x = direcionMouse [0]
-        self.rect.y = direcionMouse [1]
-
-class laser (pygame.sprite.Sprite):
-    def __init__ (self):
-        super().__init__()
-        self.image = pygame.image.load("recursos/imagenes/laser.png")
-        self.image.set_colorkey(negro)
-        self.rect = self.image.get_rect()
-    
-    def update (self): 
-        self.rect.y -= 5
 
 #crea la clase juego
 class juego (object):
