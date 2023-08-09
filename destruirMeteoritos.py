@@ -17,6 +17,7 @@ class juego (object):
         self.cantidadMeteoros = 5
         self.lasersLista = pygame.sprite.Group()
         self.meteorosAgregadosXNivel = 5
+        self.velocidadMeteoros = 0
             
         self.jugador = player()
         self.totalListaImagenes.add(self.jugador)
@@ -30,6 +31,7 @@ class juego (object):
     def reiniciarJuego (self):
         self.gameOver = False
         self.puntaje = 0
+        self.velocidadMeteoros = 0
         self.meteoroLista.empty()
         self.totalListaImagenes.empty()
         self.lasersLista.empty()
@@ -42,12 +44,16 @@ class juego (object):
         self.jugador.rect.y = 80
     
     def crearTandasMeteoros(self): 
-           for i in range (self.cantidadMeteoros): #crea los meteoros y genera la posicion donde van a comienzar
+        self.velocidadMeteoros += 0.1
+        for i in range (self.cantidadMeteoros): #crea los meteoros y genera la posicion donde van a comienzar
             meteoros = meteoro()
             meteoros.rect.x = random.randrange(pantallaAncho)
             meteoros.rect.y = random.randrange(250)#pantallaAlto)
+            meteoros.velocidadCaida += self.velocidadMeteoros
             self.meteoroLista.add(meteoros)
             self.totalListaImagenes.add(meteoros)
+        print("velocidad de caida ", meteoros.velocidadCaida)
+            
         
     def process_events (self):
         for event in pygame.event.get():
@@ -79,7 +85,7 @@ class juego (object):
                     self.totalListaImagenes.remove(disparo)
                     self.lasersLista.remove(disparo)
                     self.puntaje += 1
-                    print (self.puntaje)
+                    #print (self.puntaje)
                 if disparo.rect.y < -10 :
                     self.totalListaImagenes.remove(disparo)
                     self.lasersLista.remove(disparo)
