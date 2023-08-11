@@ -7,7 +7,7 @@ class meteoro (pygame.sprite.Sprite):
         self.image = pygame.image.load("recursos/imagenes/meteor.png").convert()
         self.image.set_colorkey(negro)
         self.rect = self.image.get_rect()
-        self.velocidadCaida = 0.9
+        self.velocidadCaida = 0.5
     
     def update (self):
         #genera el moviemiento de caida de los meteoros

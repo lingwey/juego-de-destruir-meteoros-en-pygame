@@ -6,6 +6,7 @@ pantallaAlto = 680
 pantallaAncho = 720
 negro = (0,0,0)
 blanco = (255, 255,255)
+rojo = (255, 0, 0)
 
 #crea la clase juego
 class juego (object):
@@ -20,6 +21,9 @@ class juego (object):
         self.velocidadMeteoros = 0
             
         self.jugador = player()
+        self.vidasJugador = 4
+        self.jugador.rect.x = (pantallaAncho - self.jugador.rect.width )// 2
+        self.jugador.rect.y = pantallaAlto - self.jugador.rect.height
         self.totalListaImagenes.add(self.jugador)
         self.fondo = pygame.image.load(imagenDeFondo).convert()
         self.sonido = sonidoLaser
@@ -36,12 +40,13 @@ class juego (object):
         self.totalListaImagenes.empty()
         self.lasersLista.empty()
         self.cantidadMeteoros = 5
-        self.entreTiempo = 5
+        self.entreTiempo = 3
         self.ultimaTanda = time.time()
         self.jugador = player()
+        self.vidasJugador = 4
         self.totalListaImagenes.add(self.jugador)
-        self.jugador.rect.x = pantallaAncho // 2 - 45
-        self.jugador.rect.y = 80
+        self.jugador.rect.x = (pantallaAncho - self.jugador.rect.width )// 2
+        self.jugador.rect.y = pantallaAlto - self.jugador.rect.height
     
     def crearTandasMeteoros(self): 
         self.velocidadMeteoros += 0.1
@@ -95,19 +100,30 @@ class juego (object):
                     print ("alerta")
                     self.crearTandasMeteoros()
             if pygame.sprite.spritecollide(self.jugador,self.meteoroLista,True):
+                self.vidasJugador -= 1
+                if self.vidasJugador == 0:
                     self.gameOver = True
                     #print("muerto")
 
     
     def display_frame (self,ventana):
         ventana.blit(self.fondo,[0,0])
+        #puntaje
         fuente = pygame.font.SysFont("serif", 25)
         textoPuntaje = fuente.render("Puntaje: " + str(self.puntaje), True, blanco)
-        esquinaXIzquierdaInfe = 10
-        esquinaYIzquierdaInfe = pantallaAlto - 40
-        ventana.blit(textoPuntaje,[esquinaXIzquierdaInfe, esquinaYIzquierdaInfe])
+        esquinaXIzquierda = 10
+        esquinaYInfe = pantallaAlto - 40
+        ventana.blit(textoPuntaje,[esquinaXIzquierda, esquinaYInfe])
+        #barra de vida
+        maximoVida = 5
+        longitudBarraVida = 200
+        longitudBarraVidaActual = longitudBarraVida * self.vidasJugador / maximoVida
+        esquinaXDerecha = pantallaAncho - longitudBarraVida - 10
+        pygame.draw.rect(ventana, rojo, (esquinaXDerecha, esquinaYInfe, longitudBarraVidaActual, 20))
+        
         if self.gameOver:
-            texto = fuente.render("Muerto. Pulsar barra para volver a empezar", True, blanco)
+            fuenteGameOver = pygame.font.SysFont("serif", 40)
+            texto = fuenteGameOver.render("Muerto. Pulsar barra para volver a empezar", True, rojo)
             centroX = (pantallaAncho // 2) - (texto.get_width() // 2)
             centroY = (pantallaAlto // 2) - (texto.get_height() // 2)
             ventana.blit(texto,[centroX,centroY])
