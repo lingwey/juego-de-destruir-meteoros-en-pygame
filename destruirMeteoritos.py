@@ -1,6 +1,7 @@
 import pygame, random, time, sys
 from jugadorYLaser import *
 from METEORO import *
+from menuPrincipal import menuJuego
 
 pantallaAlto = 680
 pantallaAncho = 720
@@ -137,17 +138,21 @@ def main ():
     imagenDeFondo = "recursos/imagenes/background.png"
     sonidoLaser = pygame.mixer.Sound("recursos/sonido/laser5.ogg")
     ventana = pygame.display.set_mode([pantallaAncho, pantallaAlto])
-    cerrar = False
-    reloj = pygame.time.Clock()
-    game = juego( sonidoLaser, imagenDeFondo)
+    pygame.display.set_caption("Juego de Destruir Meteoros")
     pygame.mouse.set_visible(0)
-   
-    while not cerrar:
-        cerrar = game.process_events()
-        game.run_logic()
-        game.display_frame(ventana)
-        reloj.tick(60)
-    pygame.quit()
+    
+    while True:
+       opcion = menuJuego(ventana)
+       if opcion == "jugar":
+            cerrar = False
+            reloj = pygame.time.Clock()
+            game = juego( sonidoLaser, imagenDeFondo)
+            while not cerrar:
+                cerrar = game.process_events()
+                game.run_logic()
+                game.display_frame(ventana)
+                reloj.tick(60)
+            pygame.quit()
 
 if __name__ == "__main__":
     main()      
