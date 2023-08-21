@@ -48,6 +48,7 @@ class juego (object):
         self.totalListaImagenes.add(self.jugador)
         self.jugador.rect.x = (pantallaAncho - self.jugador.rect.width )// 2
         self.jugador.rect.y = pantallaAlto - self.jugador.rect.height
+        pygame.mouse.set_visible(0)
     
     def crearTandasMeteoros(self): 
         self.velocidadMeteoros += 0.1
@@ -78,6 +79,9 @@ class juego (object):
                 if event.key == pygame.K_SPACE:
                     if self.gameOver:
                        self.reiniciarJuego()
+                if event.key == pygame.K_ESCAPE:
+                    if self.gameOver:
+                        main()
            
         return False
 
@@ -124,10 +128,15 @@ class juego (object):
         
         if self.gameOver:
             fuenteGameOver = pygame.font.SysFont("serif", 40)
-            texto = fuenteGameOver.render("Muerto. Pulsar barra para volver a empezar", True, rojo)
+            texto = fuenteGameOver.render("o pulse [Esc] para salir al menu", True, rojo)
+            texto2 = fuenteGameOver.render("Muerto. Pulsar [barra] para volver a empezar", True, rojo)
             centroX = (pantallaAncho // 2) - (texto.get_width() // 2)
             centroY = (pantallaAlto // 2) - (texto.get_height() // 2)
+            centroXTex2 = (pantallaAncho // 2) - (texto2.get_width() // 2)
+            centroYTex2 = (pantallaAlto // 3) - (texto2.get_height() // 3)
             ventana.blit(texto,[centroX,centroY])
+            ventana.blit(texto2,[centroXTex2,centroYTex2])
+            pygame.mouse.set_visible(1)
         if not self.gameOver:
             self.totalListaImagenes.draw(ventana)
             
@@ -139,7 +148,7 @@ def main ():
     sonidoLaser = pygame.mixer.Sound("recursos/sonido/laser5.ogg")
     ventana = pygame.display.set_mode([pantallaAncho, pantallaAlto])
     pygame.display.set_caption("Juego de Destruir Meteoros")
-    pygame.mouse.set_visible(0)
+    
     
     while True:
        opcion = menuJuego(ventana)
@@ -147,6 +156,7 @@ def main ():
             cerrar = False
             reloj = pygame.time.Clock()
             game = juego( sonidoLaser, imagenDeFondo)
+            pygame.mouse.set_visible(0)
             while not cerrar:
                 cerrar = game.process_events()
                 game.run_logic()
