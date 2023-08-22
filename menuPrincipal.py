@@ -36,9 +36,9 @@ def menuJuego (ventana):
                 else:
                     pygame.draw.rect(ventana, rojo, opcionJugar, 2)
                 if opcionVerRecords.collidepoint(pygame.mouse.get_pos()):
-                    pygame.draw.rect(ventana, rojoHover, opcionVerRecords)
+                    pygame.draw.rect(ventana, rojoHover, opcionVerRecords, 2)
                 else:
-                    pygame.draw.rect(ventana, rojo, opcionVerRecords)
+                    pygame.draw.rect(ventana, rojo, opcionVerRecords, 2)
                 
                 ventana.blit(textJugar, (315, 215))
                 ventana.blit(textRecords, (315, 315))
