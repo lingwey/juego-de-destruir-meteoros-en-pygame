@@ -2,6 +2,7 @@ import pygame, random, time, sys
 from jugadorYLaser import *
 from METEORO import *
 from menuPrincipal import menuJuego
+from menuRecords import *
 
 pantallaAlto = 680
 pantallaAncho = 720
@@ -152,6 +153,7 @@ def main ():
     
     while True:
        opcion = menuJuego(ventana)
+       opcion = menuRecords (ventana)
        if opcion == "jugar":
             cerrar = False
             reloj = pygame.time.Clock()
